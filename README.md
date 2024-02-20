@@ -40,7 +40,7 @@ Value per Acre analysis is advocated by [Strong Towns](https://strongtowns.org) 
 ### Tax Rates and Assessments JSON Format
 If using method (1), then the tax rates and assessment file must be in the following format:
 
-tax-rates.json:
+**tax-rates.json:**
 ```
 {
     "Residential": 3.80248,
@@ -55,7 +55,8 @@ tax-rates.json:
 }
 ```
 These rates are then used in combination with the *_Land and *_Buildings values in the assessment file. Below is a version with just the required/used structure and fields:
-assessment-file.geojson:
+
+**assessment-file.geojson:**
 ```
 {
 "type": "FeatureCollection",
@@ -70,13 +71,14 @@ assessment-file.geojson:
 ```
 
 A simplifified version might look like this:
-tax-rates.json:
+
+**tax-rates.json:**
 ```
 {
     "Residential": 5
 }
 ```
-assessment-file.geojson:
+**assessment-file.geojson:**
 ```
 {
 "type": "FeatureCollection",
@@ -92,7 +94,8 @@ assessment-file.geojson:
 
 ### Values JSON Format
 If using method (2), the values file should be in this format. This is likely the method you will want to use if your data is from another city or source.
-value-file.geojson:
+
+**value-file.geojson:**
 ```
 [
   {
