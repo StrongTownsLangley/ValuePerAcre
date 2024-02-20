@@ -23,7 +23,7 @@ namespace vpa
         public static string outputFolder = "json";
         public static int taxRateDivider = 1000;
         public static int levels = 50;
-        public static int blockSize = 100;
+        public static double blockSize = 100;
      
         // Specifications
         private static double minLongitude = 10000000;
@@ -157,7 +157,7 @@ namespace vpa
                 }
                 else if (arg.StartsWith("-block-size="))
                 {
-                    int.TryParse(arg.Substring("-block-size=".Length), out blockSize);
+                    double.TryParse(arg.Substring("-block-size=".Length), out blockSize);
                 }
             }
 
@@ -339,15 +339,13 @@ namespace vpa
             groupedByBlockSpecArray["width_in_metres"] = mWidth;
             groupedByBlockSpecArray["height_in_metres"] = mHeight;
 
-            // 100 metre square block array
-            double meterPerBlock = 100;
-            yBlocks = (int)Math.Round(mWidth / meterPerBlock);
-            xBlocks = (int)Math.Round(mHeight / meterPerBlock);
+            yBlocks = (int)Math.Round(mWidth / blockSize);
+            xBlocks = (int)Math.Round(mHeight / blockSize);
 
-            Console.WriteLine("Width: " + xBlocks + " " + meterPerBlock + "m^2 blocks");
-            Console.WriteLine("Height: " + yBlocks + " " + meterPerBlock + "m^2 blocks");
+            Console.WriteLine("Width: " + xBlocks + " " + blockSize + "m^2 blocks");
+            Console.WriteLine("Height: " + yBlocks + " " + blockSize + "m^2 blocks");
 
-            groupedByBlockSpecArray["size_of_block"] = meterPerBlock;
+            groupedByBlockSpecArray["size_of_block"] = blockSize;
             groupedByBlockSpecArray["width_in_blocks"] = xBlocks;
             groupedByBlockSpecArray["height_in_blocks"] = yBlocks;
 
@@ -359,8 +357,8 @@ namespace vpa
                 double latitude = Convert.ToDouble(entry["Latitude"]);
                 double tax = Convert.ToDouble(entry["Value"]);
 
-                int yBlockPos = yBlocks - (int)Math.Round(Distance(minLatitude, minLongitude, latitude, minLongitude, "K") * 1000 / meterPerBlock);
-                int xBlockPos = (int)Math.Round(Distance(minLatitude, minLongitude, minLatitude, longitude, "K") * 1000 / meterPerBlock);
+                int yBlockPos = yBlocks - (int)Math.Round(Distance(minLatitude, minLongitude, latitude, minLongitude, "K") * 1000 / blockSize);
+                int xBlockPos = (int)Math.Round(Distance(minLatitude, minLongitude, minLatitude, longitude, "K") * 1000 / blockSize);
 
                 if (!groupedByBlockArray.ContainsKey(xBlockPos))
                     groupedByBlockArray[xBlockPos] = new Dictionary<int, double>();
