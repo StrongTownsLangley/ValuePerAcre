@@ -22,10 +22,11 @@ Optional Flags: [output-folder="json"] [-tax-rate-divider=1000] [-levels=50] [-b
 In the **Output folder** it will create **level_\*.json** files each containing the data to be used as a layer in [Leaflet](https://github.com/Leaflet/Leaflet), as well viewable maps **website.static.html** (which contains all the layers data for local testing) and **website.dynamic.html** (which loads the level_\*.json files dynamically - NOTE: this will not work locally due to CORS) which load Leaflet and display the map.
 
 ### What is Value-per-Acre and Why?
-Looking at a place where properties are grouped into blocks based on their taxable value is allows us to see what areas are the most and least productive and contribute the most and least revenue to city finances.
+Looking at a map with properties grouped into blocks colourized based on their taxable value is allows us to see what areas are the most and least productive and contribute the most and least revenue to city finances.
 
 Value per Acre analysis is advocated by [Strong Towns](https://strongtowns.org) to evaluate the efficiency of land use by focusing on its productivity relative to infrastructure investment. By prioritizing compact, mixed-use development and identifying opportunities for infill and adaptive reuse, this can improve economic vitality, reduce sprawl, and create more sustainable, resilient communities. It aligns with Strong Towns' principles by encouraging long-term planning that improves the financial health of cities.
 
+### What does this tool do?
 - Langley Township offers comprehensive assessed property values on its open data portal, which include latitude and longitude coordinates at *https://data-tol.opendata.arcgis.com/search?tags=Land%20and%20Parcel%20Information*
 - The tool calculates taxable values by multiplying them with corresponding tax rates which are released in PDF format every year e.g. *https://www.tol.ca/en/services/resources/property-taxes/document-feed/2021-Tax-Rates.pdf*
 - The total area is partitioned into 100m² blocks (which is adjustable using the -block-size flag)
