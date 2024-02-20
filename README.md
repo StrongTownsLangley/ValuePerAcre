@@ -21,7 +21,11 @@ Optional Flags: [output-folder="json"] [-tax-rate-divider=1000] [-levels=50] [-b
 
 In the **Output folder** it will create **level_\*.json** files each containing the data to be used as a layer in [Leaflet](https://github.com/Leaflet/Leaflet), as well viewable maps **website.static.html** (which contains all the layers data for local testing) and **website.dynamic.html** (which loads the level_\*.json files dynamically - NOTE: this will not work locally due to CORS) which load Leaflet and display the map.
 
-### Program Logic and Background
+### What is Value-per-Acre and Why?
+Looking at a place where properties are grouped into blocks based on their taxable value is allows us to see what areas are the most and least productive and contribute the most and least revenue to city finances.
+
+Value per Acre analysis is advocated by [Strong Towns](https://strongtowns.org) to evaluate the efficiency of land use by focusing on its productivity relative to infrastructure investment. By prioritizing compact, mixed-use development and identifying opportunities for infill and adaptive reuse, this can improve economic vitality, reduce sprawl, and create more sustainable, resilient communities. It aligns with Strong Towns' principles by encouraging long-term planning that improves the financial health of cities.
+
 - Langley Township offers comprehensive assessed property values on its open data portal, which include latitude and longitude coordinates at *https://data-tol.opendata.arcgis.com/search?tags=Land%20and%20Parcel%20Information*
 - The tool calculates taxable values by multiplying them with corresponding tax rates which are released in PDF format every year e.g. *https://www.tol.ca/en/services/resources/property-taxes/document-feed/2021-Tax-Rates.pdf*
 - The total area is partitioned into 100m² blocks (which is adjustable using the -block-size flag)
@@ -29,6 +33,8 @@ In the **Output folder** it will create **level_\*.json** files each containing 
 - The tool searches for which property value to use as the highest value cap, the blocks are then grouped into 50 levels from highest to lowest (number of levels adjustable with -levels flag) according to the most even distribution.
 
 **NOTE: This is a "point-based" mapping tool. As such parcel size and shape currently does not factor into the calculation. A large single site which pays a high amount of property tax may show as a single lone high-value block, which doesn't accurately show it's true value-per-acre spread out across multiple blocks. In future this will be improved to encorporate parcel sizes and shapes.**
+
+
 
 ### Tax Rates and Assessments JSON Format
 If using method (1), then the tax rates and assessment file must be in the following format:
