@@ -113,7 +113,8 @@ If using method (2), the values file should be in this format. This is likely th
 ```
 
 ## Other Similar Projects
-Fellow Strong Towns Local Conversation group [A Better Cobb](https://abettercobb.substack.com/) created their own set of Value per Acre tools, available at https://github.com/ABetterCobb/ValuePerAcre/
+- A commercial firm producing this kind of analysis is [Urban3](https://www.urbanthree.com/), who produce 3D renderings in addition to factoring in not just the Value but also the Cost-per-Acre.
+- Fellow Strong Towns Local Conversation group [A Better Cobb](https://abettercobb.substack.com/) created their own set of Value per Acre tools, available at https://github.com/ABetterCobb/ValuePerAcre/
 
 ## Contributing
 
