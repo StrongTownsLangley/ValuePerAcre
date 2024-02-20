@@ -1,4 +1,5 @@
-# Value-per-Acre Tool
+# Value-per-Acre Mapping Tool
+This tool takes a list of latitude and longitude point values, combined with either property assessments and tax rates or pre-calculated values, to produce an interactive web-based value-per-acre style heat-map where points and values are totalled into blocks.
 ![valueperacre_map](https://github.com/StrongTownsLangley/ValuePerAcre/assets/160652425/e6086d8a-2f75-4d5f-9fb8-9a3ffa4089b9)
 
 ## Demo
@@ -27,7 +28,7 @@ In the **Output folder** it will create **level_\*.json** files each containing 
 - Each property value is added to its respective block based on it's coordinates.
 - The tool searches for which property value to use as the highest value cap, the blocks are then grouped into 50 levels from highest to lowest (number of levels adjustable with -levels flag) according to the most even distribution.
 
-**NOTE: Property/parcel size and shape currently does not factor into the calculation. A large single site which pays a high amount of property tax may show as a single lone high-value block, which doesn't accurately show it's true value-per-acre spread out across multiple blocks. In future this will be improved to encorporate parcel sizes.**
+**NOTE: This is a "point-based" mapping tool. As such parcel size and shape currently does not factor into the calculation. A large single site which pays a high amount of property tax may show as a single lone high-value block, which doesn't accurately show it's true value-per-acre spread out across multiple blocks. In future this will be improved to encorporate parcel sizes and shapes.**
 
 ### Tax Rates and Assessments JSON Format
 If using method (1), then the tax rates and assessment file must be in the following format:
