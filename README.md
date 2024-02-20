@@ -20,6 +20,15 @@ Optional Flags: [output-folder="json"] [-tax-rate-divider=1000] [-levels=50] [-b
 
 In the **Output folder** it will create **level_\*.json** files each containing the data to be used as a layer in [Leaflet](https://github.com/Leaflet/Leaflet), as well viewable maps **website.static.html** (which contains all the layers data for local testing) and **website.dynamic.html** (which loads the level_\*.json files dynamically - NOTE: this will not work locally due to CORS) which load Leaflet and display the map.
 
+### Program Logic and Background
+- Langley Township offers comprehensive assessed property values on its open data portal, which include latitude and longitude coordinates.
+- The tool calculates taxable values by multiplying them with corresponding tax rates.
+- The area is partitioned into 100m² blocks for efficient processing.
+- Each property value is added to its respective block based on it's coordinates.
+- A distribution optimization process ensures an pleasing map display, aiming for evenness from top to bottom.
+
+**NOTE: Property/parcel size and shape currently does not factor into the calculation. A large single site which pays a high amount of property tax may show as a single lone high-value block, which doesn't accurately show it's true value-per-acre spread out across multiple blocks. In future this will be improved to encorporate parcel sizes.**
+
 ### Tax Rates and Assessments JSON Format
 If using method (1), then the tax rates and assessment file must be in the following format:
 
