@@ -64,7 +64,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="2021_values.geojson" />
+    <Content Include="2021_values.geojson">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
