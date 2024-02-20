@@ -116,7 +116,9 @@ If using method (2), the values file should be in this format. This is likely th
 - A commercial firm producing this kind of analysis is [Urban3](https://www.urbanthree.com/), who produce 3D renderings in addition to factoring in not just the Value but also the Cost-per-Acre.
 - Fellow Strong Towns Local Conversation group [A Better Cobb](https://abettercobb.substack.com/) created their own set of Value per Acre tools, available at https://github.com/ABetterCobb/ValuePerAcre/
 
-## Contributing
+## Credits and Contributing
+
+This tool was programmed by James Hansen (james@strongtownslangley.org)
 
 The project is a Visual Studio 2010 project in C# .NET 4.0. It's an old platform, but I like to use older platforms for simple tools like this.
 
