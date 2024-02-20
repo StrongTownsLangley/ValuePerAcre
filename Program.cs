@@ -192,7 +192,7 @@ namespace vpa
             if (mode == "")
             {
                 Console.WriteLine("(1) Usage from Property Assessments (Have to Calculate Tax using Tax Rates File): vpa.exe -from-tax-rates=\"tax-rates.json\" -from-assessments=\"assessment-file.geojson\"");
-                Console.WriteLine("(2) Usage from Values (Tax already calculated): vpa.exe -from-values=\"value-file.geojson\"");
+                Console.WriteLine("(2) Usage from Values (Tax or Value already calculated): vpa.exe -from-values=\"value-file.geojson\"");
                 Console.WriteLine(@"-- Expected Values JSON Format:
 [
   {
@@ -222,10 +222,9 @@ namespace vpa
 
 
             
-            Console.WriteLine("Output Folder: {0}", outputFolder);
-            Console.WriteLine("Tax Rate Divider: {0}", taxRateDivider);
-            Console.WriteLine("Tax Levels: {0}", levels);
+            Console.WriteLine("Output Folder: {0}", outputFolder);            
             Console.WriteLine("Block Size: {0} m^2", blockSize);
+            Console.WriteLine("Number of Levels to Group Blocks Into: {0}", levels);
 
 
             #endregion
@@ -238,6 +237,7 @@ namespace vpa
             {
                 Console.WriteLine("From Tax File: {0}", taxRatesFile);
                 Console.WriteLine("From Assessment File: {0}", assessmentsFile);
+                Console.WriteLine("Tax Rate Divider: {0}", taxRateDivider);
 
                 string taxRateStr = File.ReadAllText(taxRatesFile);
                 Dictionary<string, double> taxRate = JsonConvert.DeserializeObject<Dictionary<string, double>>(taxRateStr);
