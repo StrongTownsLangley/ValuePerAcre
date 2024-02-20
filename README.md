@@ -23,9 +23,10 @@ In the **Output folder** it will create **level_\*.json** files each containing 
 ### Program Logic and Background
 - Langley Township offers comprehensive assessed property values on its open data portal, which include latitude and longitude coordinates.
 - The tool calculates taxable values by multiplying them with corresponding tax rates.
-- The area is partitioned into 100m² blocks for efficient processing.
+- The total area is partitioned into 100m² blocks (which is adjustable using the -block-size flag)
 - Each property value is added to its respective block based on it's coordinates.
-- A distribution optimization process ensures an pleasing map display, aiming for evenness from top to bottom.
+- The blocks are then grouped into 50 levels from highest to lowest (number of levels adjustable with -levels flag)
+- The tool searches for which block to use as the highest value to produce the most even distribution.
 
 **NOTE: Property/parcel size and shape currently does not factor into the calculation. A large single site which pays a high amount of property tax may show as a single lone high-value block, which doesn't accurately show it's true value-per-acre spread out across multiple blocks. In future this will be improved to encorporate parcel sizes.**
 
