@@ -102,6 +102,9 @@ value-file.geojson:
 ]
 ```
 
+## Other Similar Projects
+Fellow Strong Towns Local Conversation group [A Better Cobb](https://abettercobb.substack.com/) created their own set of Value per Acre tools, available at https://github.com/ABetterCobb/ValuePerAcre/
+
 ## Contributing
 
 The project is a Visual Studio 2010 project in C# .NET 4.0. It's an old platform, but I like to use older platforms for simple tools like this.
