@@ -92,3 +92,12 @@ value-file.geojson:
 ]
 ```
 
+## Contributing
+
+The project is a Visual Studio 2010 project in C# .NET 4.0. It's an old platform, but I like to use older platforms for simple tools like this.
+
+If you encounter any issues while using it or have suggestions for improvement, please [open an issue](https://github.com/StrongTownsLangley/ValuePerAcre/issues) on the GitHub repository. Pull requests are also welcome.
+
+## License
+
+This program is released under the [Apache 2.0 License](https://github.com/StrongTownsLangley/ValuePerAcre/blob/main/LICENSE). If you use it for your website or project, please provide credit to **Strong Towns Langley** and preferably link to this GitHub.
