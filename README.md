@@ -15,7 +15,7 @@ The tool has two modes, one where it will calculate the values from input tax ra
 ```
 (1) Usage from Property Assessments (Have to Calculate Tax using Tax Rates File): vpa.exe -from-tax-rates="tax-rates.json" -from-assessments="assessment-file.geojson"
 (2) Usage from Values (Tax or Value already calculated): vpa.exe -from-values="value-file.geojson"
-Optional Flags: [output-folder=\"json\"] [-tax-rate-divider=1000] [-levels=50] [-block-size=100]"
+Optional Flags: [output-folder="json"] [-tax-rate-divider=1000] [-levels=50] [-block-size=100]"
 ```
 
 In the **Output folder** it will create **level_\*.json** files each containing the data to be used as a layer in [Leaflet](https://github.com/Leaflet/Leaflet), as well viewable maps **website.static.html** (which contains all the layers data for local testing) and **website.dynamic.html** (which loads the level_\*.json files dynamically - NOTE: this will not work locally due to CORS) which load Leaflet and display the map.
