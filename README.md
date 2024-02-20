@@ -1,6 +1,11 @@
 # Value-per-Acre Mapping Tool
-This tool takes a list of latitude and longitude point values, combined with either property assessments and tax rates or pre-calculated values, to produce an interactive web-based value-per-acre style heat-map where points and values are totalled into blocks.
+This tool transforms a list of values at latitude and longitude points into an interactive map.
+
+Values are totalled into square blocks overlayed on the map, and each block is colour graded in a heat-map style from red to blue, red indicating high value and blue indicating a low value.
+
 ![valueperacre_map](https://github.com/StrongTownsLangley/ValuePerAcre/assets/160652425/e6086d8a-2f75-4d5f-9fb8-9a3ffa4089b9)
+
+The map is displayed on a web page using [Leaflet](https://github.com/Leaflet/Leaflet).
 
 ## Demo
 This tool was used to compile the map at https://strongtownslangley.org/maps?revenue-map
@@ -19,7 +24,7 @@ The tool has two modes, one where it will calculate the values from input tax ra
 Optional Flags: [output-folder="json"] [-tax-rate-divider=1000] [-levels=50] [-block-size=100]"
 ```
 
-In the **Output folder** it will create **level_\*.json** files each containing the data to be used as a layer in [Leaflet](https://github.com/Leaflet/Leaflet), as well viewable maps **website.static.html** (which contains all the layers data for local testing) and **website.dynamic.html** (which loads the level_\*.json files dynamically - NOTE: this will not work locally due to CORS) which load Leaflet and display the map.
+Viewable maps are generated in the output folder: **website.static.html** (which contains all the layers data for local testing) and **website.dynamic.html** (which loads the generated level_\*.json files dynamically - *NOTE: this will not work locally due to CORS*).
 
 ### What is Value-per-Acre and Why?
 Looking at a map with properties grouped into blocks colourized based on their taxable value is allows us to see what areas are the most and least productive and contribute the most and least revenue to city finances.
@@ -119,6 +124,10 @@ If using method (2), the values file should be in this format. This is likely th
 ## Credits and Contributing
 
 This tool was programmed by James Hansen (james@strongtownslangley.org)
+
+[Leaflet](https://github.com/Leaflet/Leaflet) is used to display the map.
+
+[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) is used to read and write JSON files and data.
 
 The project is a Visual Studio 2010 project in C# .NET 4.0. It's an old platform, but I like to use older platforms for simple tools like this.
 
