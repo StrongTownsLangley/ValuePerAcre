@@ -21,8 +21,8 @@ Optional Flags: [output-folder="json"] [-tax-rate-divider=1000] [-levels=50] [-b
 In the **Output folder** it will create **level_\*.json** files each containing the data to be used as a layer in [Leaflet](https://github.com/Leaflet/Leaflet), as well viewable maps **website.static.html** (which contains all the layers data for local testing) and **website.dynamic.html** (which loads the level_\*.json files dynamically - NOTE: this will not work locally due to CORS) which load Leaflet and display the map.
 
 ### Program Logic and Background
-- Langley Township offers comprehensive assessed property values on its open data portal, which include latitude and longitude coordinates.
-- The tool calculates taxable values by multiplying them with corresponding tax rates.
+- Langley Township offers comprehensive assessed property values on its open data portal, which include latitude and longitude coordinates at *https://data-tol.opendata.arcgis.com/search?tags=Land%20and%20Parcel%20Information*
+- The tool calculates taxable values by multiplying them with corresponding tax rates which are released in PDF format every year e.g. *https://www.tol.ca/en/services/resources/property-taxes/document-feed/2021-Tax-Rates.pdf*
 - The total area is partitioned into 100m² blocks (which is adjustable using the -block-size flag)
 - Each property value is added to its respective block based on it's coordinates.
 - The blocks are then grouped into 50 levels from highest to lowest (number of levels adjustable with -levels flag)
