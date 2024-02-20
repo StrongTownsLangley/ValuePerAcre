@@ -191,8 +191,8 @@ namespace vpa
 
             if (mode == "")
             {
-                Console.WriteLine("(1) Usage from Property Assessments (Have to Calculate Tax using Tax Rates File): vpa.exe -from-tax-rates=\"tax-rates.json\" -from-assessments=\"assessment-file.json\"");
-                Console.WriteLine("(2) Usage from Values (Tax already calculated): vpa.exe -from-values=\"value-file.json\"");
+                Console.WriteLine("(1) Usage from Property Assessments (Have to Calculate Tax using Tax Rates File): vpa.exe -from-tax-rates=\"tax-rates.json\" -from-assessments=\"assessment-file.geojson\"");
+                Console.WriteLine("(2) Usage from Values (Tax already calculated): vpa.exe -from-values=\"value-file.geojson\"");
                 Console.WriteLine(@"-- Expected Values JSON Format:
 [
   {
