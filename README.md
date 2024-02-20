@@ -18,6 +18,8 @@ The tool has two modes, one where it will calculate the values from input tax ra
 Optional Flags: [output-folder=\"json\"] [-tax-rate-divider=1000] [-levels=50] [-block-size=100]"
 ```
 
+In the **Output folder** it will create **level_\*.json** files each containing the data to be used as a layer in [Leaflet](https://github.com/Leaflet/Leaflet), as well viewable maps **website.static.html** (which contains all the layers data for local testing) and **website.dynamic.html** (which loads the level_\*.json files dynamically - NOTE: this will not work locally due to CORS) which load Leaflet and display the map.
+
 ### Tax Rates and Assessments JSON Format
 If using method (1), then the tax rates and assessment file must be in the following format:
 
@@ -89,3 +91,4 @@ value-file.geojson:
   ...
 ]
 ```
+
