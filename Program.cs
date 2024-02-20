@@ -499,7 +499,7 @@ namespace vpa
             File.WriteAllText(Path.Combine(outputFolder, levelInfoFile), Newtonsoft.Json.JsonConvert.SerializeObject(levelsInfoArray));           
             #endregion
 
-            #region Write Static Map HTML
+            #region Write Map HTML
             // Replace {AVGLAT}, {AVGLON}, {LEVELS}, {DATALIST}
             // taxLevel.addData(data);
             var website = File.ReadAllText("vpa.template.html");
@@ -533,7 +533,7 @@ namespace vpa
             File.WriteAllText(Path.Combine(outputFolder, websiteStaticFile), websiteStatic);
 
             var websiteDynamicFile = "website.dynamic.html";
-            Console.WriteLine("Writing Static Website Heatmap '" + websiteDynamicFile + "' file...");
+            Console.WriteLine("Writing Dynamic Website Heatmap '" + websiteDynamicFile + "' file...");
             File.WriteAllText(Path.Combine(outputFolder, websiteDynamicFile), websiteDynamic);     
             #endregion
 
