@@ -5,8 +5,6 @@ Each block by default is 100m² and is colour graded in a heat-map style from re
 
 ![valueperacre_map](https://github.com/StrongTownsLangley/ValuePerAcre/assets/160652425/e6086d8a-2f75-4d5f-9fb8-9a3ffa4089b9)
 
-The map is displayed on a web page using [Leaflet](https://github.com/Leaflet/Leaflet).
-
 ## Demo
 This tool was used to compile the map at https://strongtownslangley.org/maps?revenue-map
 
