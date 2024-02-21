@@ -31,7 +31,7 @@ Looking at a map with properties grouped into blocks colourized based on their t
 
 Value per Acre analysis is advocated by [Strong Towns](https://strongtowns.org) to evaluate the efficiency of land use by focusing on both its productivity and desirability relative to infrastructure investment.
 
-While higher density development typically corresponds with a higher taxable value, more desirable areas with parks (even though the parks themselves may have low or negative taxable value) and access to amenities can also attract higher home prices and as such, higher taxable value.   
+While higher density development typically corresponds with a higher taxable value, more desirable areas can also attract higher home prices and as such, higher taxable value. This effect can compensate for areas of low taxable value like parks that increase desirability. 
 
 ### What does this tool do?
 - Langley Township offers comprehensive assessed property values on its open data portal, which include latitude and longitude coordinates at *https://data-tol.opendata.arcgis.com/search?tags=Land%20and%20Parcel%20Information*
