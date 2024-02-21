@@ -29,7 +29,9 @@ Viewable maps are generated in the output folder:
 ### What is Value-per-Acre and Why?
 Looking at a map with properties grouped into blocks colourized based on their taxable value is allows us to see what areas are the most and least productive and contribute the most and least revenue to city finances.
 
-Value per Acre analysis is advocated by [Strong Towns](https://strongtowns.org) to evaluate the efficiency of land use by focusing on its productivity relative to infrastructure investment. By prioritizing compact, mixed-use development and identifying opportunities for infill and adaptive reuse, this can improve economic vitality, reduce sprawl, and create more sustainable, resilient communities. It aligns with Strong Towns' principles by encouraging long-term planning that improves the financial health of cities.
+Value per Acre analysis is advocated by [Strong Towns](https://strongtowns.org) to evaluate the efficiency of land use by focusing on both its productivity and desirability relative to infrastructure investment.
+
+While higher density development typically corresponds with a higher taxable value, more desirable areas with parks (even though the parks themselves may have low or negative taxable value) and access to amenities can also attract higher home prices and as such, higher taxable value.   
 
 ### What does this tool do?
 - Langley Township offers comprehensive assessed property values on its open data portal, which include latitude and longitude coordinates at *https://data-tol.opendata.arcgis.com/search?tags=Land%20and%20Parcel%20Information*
@@ -37,6 +39,7 @@ Value per Acre analysis is advocated by [Strong Towns](https://strongtowns.org) 
 - The total area is partitioned into 100m² blocks (which is adjustable using the -block-size flag)
 - Each property value is added to its respective block based on it's coordinates.
 - The tool searches for which block value to use as the highest value cap, the blocks are then grouped into 50 levels from highest to lowest (number of levels adjustable with -levels flag) according to the most even distribution.
+- The tool then outputs a webpage map, json files with the blocks grouped by level, as well as other information in json files.
 
 **NOTE: This is a "point-based" mapping tool. As such parcel size and shape currently does not factor into the calculation. A large single site which pays a high amount of property tax may show as a single lone high-value block, which doesn't accurately show it's true value-per-acre spread out across multiple blocks. In future this will be improved to encorporate parcel sizes and shapes.**
 
