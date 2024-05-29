@@ -641,8 +641,9 @@ namespace vpa
                                                             
                                 area += thisCoord[0] * nextCoord[1] - nextCoord[0] * thisCoord[1];
                             }
-                            area = Math.Abs(area) / 2.0; // Area in metres squared
-                            
+                            var areaInSquareDegrees = Math.Abs(area) / 2.0;
+                            var areaInSquareMetres = areaInSquareDegrees * 12362500000;
+                            area = areaInSquareMetres / 4046.85642; // Acres
                         }
                     }
 
