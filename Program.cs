@@ -729,9 +729,16 @@ namespace vpa
                     Dictionary<int, List<Property>> groupedPIDs = properties
                     .GroupBy(p => p.Level)
                     .ToDictionary(g => g.Key, g => g.ToList());
+                    var levelsInfoArray = new List<object>();
                     foreach (var group in groupedPIDs)
                     {
                         int level = group.Key;
+                        var levelProperties = group.Value;
+
+                        var minLevelBlockValue = levelProperties.Min(m => m.ValuePerArea);
+                        var maxLevelBlockValue = group.Value.Max(m => m.ValuePerArea);
+                        var avgLevelBlockValue = group.Value.Average(m => m.ValuePerArea);
+                        var numLevelBlockValue = group.Value.Count();
                         var geoJson = new
                         {
                             type = "FeatureCollection",
@@ -739,7 +746,7 @@ namespace vpa
                             info = new List<object>()
                         };
 
-                        foreach (var property in group.Value)
+                        foreach (var property in levelProperties)
                         {
                             if (property == null) continue;
                             foreach (var feature in property.Features)
@@ -753,13 +760,20 @@ namespace vpa
                             }
                         }
 
+                        // Store info about this level
+                        var info = new { level = level, minLevelBlockValue = minLevelBlockValue, maxLevelBlockValue = maxLevelBlockValue, avgLevelBlockValue = avgLevelBlockValue, numLevelBlockValue = numLevelBlockValue };
+                        geoJson.info.Add(info);
+                        levelsInfoArray.Add(info);
+
                         // Write GeoJSON to file
                         var levelFile = "level_" + level + ".json";
                         Console.WriteLine("Writing Level JSON '" + levelFile + "' file...");
                         File.WriteAllText(Path.Combine(outputFolder, levelFile), Newtonsoft.Json.JsonConvert.SerializeObject(geoJson));
                         geoJsonArray.Add(geoJson);
                     }
-
+                    var levelInfoFile = "level_info.json";
+                    Console.WriteLine("Writing Level JSON '" + levelInfoFile + "' file...");
+                    File.WriteAllText(Path.Combine(outputFolder, levelInfoFile), Newtonsoft.Json.JsonConvert.SerializeObject(levelsInfoArray));
 
                 #endregion
             }
