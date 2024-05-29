@@ -1,9 +1,13 @@
 # Value-per-Acre Mapping Tool
-This tool transforms a list of values at latitude and longitude points into an interactive total-value-per-block map in the style of a traditional "value-per-acre" analysis.
+This tool transforms a list of values at latitude and longitude points into an interactive map in the style of a traditional "value-per-acre" analysis.
 
+### Point Mode
 Each block by default is 100m² and is colour graded in a heat-map style from red to blue, red indicating high value and blue indicating a low value.
-
 ![valueperacre_map](https://github.com/StrongTownsLangley/ValuePerAcre/assets/160652425/e6086d8a-2f75-4d5f-9fb8-9a3ffa4089b9)
+
+### Parcel Mode
+Parcel Data is used to generate a more accurate map
+![image](https://github.com/StrongTownsLangley/ValuePerAcre/assets/160652425/108e1963-a9b7-44e2-9849-93c9f3d1430f)
 
 ## Demo
 This tool was used to compile the map at https://strongtownslangley.org/maps?revenue-map
@@ -17,8 +21,8 @@ This tool was designed to work with Township of Langley data specifically, but s
 The tool has two modes, one where it will calculate the values from input tax rates and assessed property values, and another where it will take pre-calculated values.
 
 ```
-(1) Usage from Property Assessments (Have to Calculate Tax using Tax Rates File): vpa.exe -from-tax-rates="tax-rates.json" -from-assessments="assessment-file.geojson"
-(2) Usage from Values (Tax or Value already calculated): vpa.exe -from-values="value-file.geojson"
+(1) Usage from Property Assessments (Have to Calculate Tax using Tax Rates File): vpa.exe -from-tax-rates="tax-rates.json" -from-assessments="assessment-file.geojson" [-assessment-pid-field="PID"] [-parcels="parcel-file.geojson"]
+(2) Usage from Values (Tax or Value already calculated): vpa.exe -from-values="value-file.geojson" [-parcels="parcel-file.geojson"]
 Optional Flags: [output-folder="json"] [-tax-rate-divider=1000] [-levels=50] [-block-size=100]"
 ```
 
@@ -78,6 +82,98 @@ These rates are then used in combination with the *_Land and *_Buildings values 
 }
 ```
 
+**parcel-file.geojson:**
+This is a pretty standard GeoJSON file, however points are expected in EPSG:4326 format but are converted to WGS84 for Leaflet.
+```
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "EPSG:26910"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": 797972,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              525199.054600001,
+              5432031.84979953
+            ],
+            [
+              525101.0592,
+              5432031.52039953
+            ],
+            [
+              525100.3221,
+              5432129.37989953
+            ],
+            [
+              525198.567,
+              5432129.78269953
+            ],
+            [
+              525198.712899999,
+              5432106.36829953
+            ],
+            [
+              525198.997799999,
+              5432048.33409953
+            ],
+            [
+              525199.054600001,
+              5432031.84979953
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "PID": "000-561-123",       
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 797973,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              534499.5739,
+              5445708.15879954
+            ],
+            [
+              534499.590099999,
+              5445712.92899954
+            ],
+            [
+              534509.826899999,
+              5445712.89819954
+            ],
+            [
+              534509.8108,
+              5445708.12819954
+            ],
+            [
+              534499.5739,
+              5445708.15879954
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "PID":  "000-561-456",
+      }
+    }
+  ]
+}
+```
+
 A simplifified version might look like this:
 
 **tax-rates.json:**
@@ -100,8 +196,41 @@ A simplifified version might look like this:
 }
 ```
 
+**parcel-file.geojson:**
+```
+{
+  "type": "FeatureCollection",  
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": 797972,
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [ ]
+        ]
+      },
+      "properties": {
+        "PID": "000-561-123",       
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [ ]
+      },
+      "properties": {
+        "PID":  "000-561-456",
+      }
+    }
+  ]
+}
+```
+
 ### Values JSON Format
 If using method (2), the values file should be in this format. This is likely the method you will want to use if your data is from another city or source.
+PID Field only required if parcel file is specified.
 
 **value-file.geojson:**
 ```
@@ -110,11 +239,13 @@ If using method (2), the values file should be in this format. This is likely th
     "Latitude": 49.00444377963,
     "Longitude": -122.64299023049,
     "Value": 577.68
+    "PID": "008-401-123"
   },
   {
     "Latitude": 49.00445057939,
     "Longitude": -122.63949034915,
     "Value": 8156.32
+     "PID": "008-401-456"
   },
   ...
 ]
