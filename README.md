@@ -1,12 +1,14 @@
 # Value-per-Acre Mapping Tool
-This tool transforms a list of values at latitude and longitude points into an interactive map in the style of a traditional "value-per-acre" analysis.
+This tool transforms a list of values at latitude and longitude points into an interactive map in the style of a traditional "value-per-acre" analysis.The map is colour graded in a heat-map style from red to blue, red indicating high value and blue indicating a low value.
 
 ### Point Mode
-Each block by default is 100m² and is colour graded in a heat-map style from red to blue, red indicating high value and blue indicating a low value.
+Each block by default is 100m².
+
 ![valueperacre_map](https://github.com/StrongTownsLangley/ValuePerAcre/assets/160652425/e6086d8a-2f75-4d5f-9fb8-9a3ffa4089b9)
 
 ### Parcel Mode
-Parcel Data is used to generate a more accurate map
+Parcel Data is used to assign colours to each individual parcel found.
+
 ![image](https://github.com/StrongTownsLangley/ValuePerAcre/assets/160652425/108e1963-a9b7-44e2-9849-93c9f3d1430f)
 
 ## Demo
