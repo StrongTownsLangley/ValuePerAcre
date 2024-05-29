@@ -47,10 +47,6 @@ While higher density development typically corresponds with a higher taxable val
 - The tool searches for which block value to use as the highest value cap, the blocks are then grouped into 50 levels from highest to lowest (number of levels adjustable with -levels flag) according to the most even distribution.
 - The tool then outputs a webpage map, json files with the blocks grouped by level, as well as other information in json files.
 
-**NOTE: This is a "point-based" mapping tool. As such parcel size and shape currently does not factor into the calculation. A large single site which pays a high amount of property tax may show as a single lone high-value block, which doesn't accurately show it's true value-per-acre spread out across multiple blocks. In future this will be improved to encorporate parcel sizes and shapes.**
-
-
-
 ### Tax Rates and Assessments JSON Format
 If using method (1), then the tax rates and assessment file must be in the following format:
 
