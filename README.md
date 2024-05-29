@@ -42,14 +42,12 @@ While higher density development typically corresponds with a higher taxable val
 ### What does this tool do?
 - Langley Township offers comprehensive assessed property values on its open data portal at *https://data-tol.opendata.arcgis.com/search?tags=Land%20and%20Parcel%20Information*
 - The tool calculates taxable values by multiplying them with corresponding tax rates which are released in PDF format every year e.g. *https://www.tol.ca/en/services/resources/property-taxes/document-feed/2024-Tax-Rates.pdf*
-
-#### Point Mode:
-- The total area is partitioned into 100m² blocks (which is adjustable using the -block-size flag)
-- Each property value is added to its respective block based on it's coordinates.
-#### Parcel Mode
-- The taxable value is mapped to it's respective parcels in the parcel geojson file using the **PID** field.
-- The value is divided by the total area of the property in acres.
-
+- Point Mode:
+    - The total area is partitioned into 100m² blocks (which is adjustable using the -block-size flag)
+    -  Each property value is added to its respective block based on it's coordinates.
+- Parcel Mode:
+    - The taxable value is mapped to it's respective parcels in the parcel geojson file using the **PID** field.
+    - The value is divided by the total area of the property in acres.
 - The tool searches for which block value to use as the highest value cap, the blocks are then grouped into 50 levels from highest to lowest (number of levels adjustable with -levels flag) according to the most even distribution.
 - The tool then outputs a webpage map, json files with the blocks grouped by level, as well as other information in json files.
 
