@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Drawing;
 
 /* STRONG TOWNS LANGLEY VALUE-PER-ACRE TOOL
  * Coded by: James Hansen (james@strongtownslangley.org)
@@ -40,11 +41,19 @@ namespace vpa
         class Property // For parcel based system
         {
             public string PID { get; set; } //do nulls as zero value
+            public List<List<double[]>> Polygons { get; set; }
             public List<JToken> Features { get; set; } // change to list            
             public double Value { get; set; }
             public double TotalArea { get; set; }
             public double ValuePerArea { get; set; }
             public int Level { get; set; }
+            public List<double> PolygonValuesPerAcre { get; set; }
+            public List<string> MergedPIDs { get; set; }
+
+            public Property()
+            {
+                MergedPIDs = new List<string>();
+            }
         };
 
         // Shared Functions
@@ -199,6 +208,99 @@ namespace vpa
             public List<double> Values { get; set; }
         }
 
+        // Geometry
+        public static class GeometryOperations
+        {
+            public static void ConvertPolygon(JToken coordinates)
+            {
+                for (int j = 0; j < coordinates.Count(); j++)
+                {
+                    double[] coord = coordinates[j].Select(v => (double)v).ToArray();
+                    double[] transformed = UtmToLatLon(coord[0], coord[1], 10, true);
+                    coordinates[j] = new JArray(transformed);
+                }
+            }
+
+            public static bool IsPointInPolygon(double[] point, List<double[]> polygon)
+            {
+                bool inside = false;
+                for (int i = 0, j = polygon.Count - 1; i < polygon.Count; j = i++)
+                {
+                    if (((polygon[i][1] > point[1]) != (polygon[j][1] > point[1])) &&
+                        (point[0] < (polygon[j][0] - polygon[i][0]) * (point[1] - polygon[i][1]) / (polygon[j][1] - polygon[i][1]) + polygon[i][0]))
+                    {
+                        inside = !inside;
+                    }
+                }
+                return inside;
+            }
+
+            public static bool IsPolygonInPolygon(List<double[]> innerPolygon, List<double[]> outerPolygon)
+            {
+                return innerPolygon.All(point => IsPointInPolygon(point, outerPolygon));
+            }
+
+            public static double CalculatePolygonArea(List<double[]> polygon)
+            {
+                double area = 0;
+                int j = polygon.Count - 1;
+
+                for (int i = 0; i < polygon.Count; i++)
+                {
+                    area += (polygon[j][0] + polygon[i][0]) * (polygon[j][1] - polygon[i][1]);
+                    j = i;
+                }
+
+                var areaInSquareDegrees = Math.Abs(area) / 2.0;
+                var areaInSquareMetres = areaInSquareDegrees * 12362500000;
+                return areaInSquareMetres / 4046.85642;
+            }
+
+            public static bool DoPolygonsOverlap(List<double[]> poly1, List<double[]> poly2)
+            {
+                return poly1.Any(p => IsPointInPolygon(p, poly2)) || poly2.Any(p => IsPointInPolygon(p, poly1));
+            }
+
+            public static Rectangle GetBoundingBox(List<List<double[]>> polygons)
+            {
+                int minX = int.MaxValue, minY = int.MaxValue;
+                int maxX = int.MinValue, maxY = int.MinValue;
+
+                foreach (var polygon in polygons)
+                {
+                    foreach (var point in polygon)
+                    {
+                        int x = (int)point[0];
+                        int y = (int)point[1];
+
+                        if (x < minX) minX = x;
+                        if (x > maxX) maxX = x;
+                        if (y < minY) minY = y;
+                        if (y > maxY) maxY = y;
+                    }
+                }
+
+                return Rectangle.FromLTRB(minX, minY, maxX, maxY);
+            }
+
+            public static bool ArePolygonsNearlyEqual(List<double[]> poly1, List<double[]> poly2, double tolerance = 0.001)
+            {
+                double perim1 = GetPolygonPerimeter(poly1);
+                double perim2 = GetPolygonPerimeter(poly2);
+                return Math.Abs(perim1 - perim2) < tolerance;
+            }
+
+            private static double GetPolygonPerimeter(List<double[]> polygon)
+            {
+                double perimeter = 0;
+                for (int i = 0; i < polygon.Count; i++)
+                {
+                    int next = (i + 1) % polygon.Count;
+                    perimeter += Distance(polygon[i][1], polygon[i][0], polygon[next][1], polygon[next][0], "K");
+                }
+                return perimeter;
+            }
+        }
 
         // Main Program
         public static void Main(string[] args)
@@ -597,7 +699,30 @@ namespace vpa
 
                 JArray features = (JArray)parcelsJson["features"];
 
-                
+                // Convert all Polygons to Lat/Long from EPSG:26910
+                Console.WriteLine("Preprocessing Polygons...");
+                for (int i = 0; i < features.Count; i++)
+                {
+                    ProgressBar(i, features.Count);
+                    var feature = features[i];
+                    var geometry = feature["geometry"];
+
+                    if (geometry["type"].ToString() == "Polygon" || geometry["type"].ToString() == "MultiPolygon")
+                    {
+                        if (geometry["type"].ToString() == "Polygon")
+                        {
+                            GeometryOperations.ConvertPolygon(geometry["coordinates"][0]);
+                        }
+                        else // MultiPolygon
+                        {
+                            foreach (var polygon in geometry["coordinates"])
+                            {
+                                GeometryOperations.ConvertPolygon(polygon[0]);
+                            }
+                        }
+                    }
+                }
+                Console.WriteLine(); // Clear progress bar
 
                 // Populate Properties Array with All Polygons for Property and their Total Area and Fix Polygons for Leaflet
                 Console.WriteLine("Processing Polygons...");
@@ -610,6 +735,8 @@ namespace vpa
                 Dictionary<string, Property> PIDToPropertiesDictionary = new Dictionary<string, Property>();
 
 
+                List<Property> properties = new List<Property>();
+
                 foreach (var feature in features)
                 {
                     ProgressBar(index, features.Count());
@@ -617,71 +744,168 @@ namespace vpa
 
                     string PID = feature["properties"]["PID"].ToString();
                     var geometry = feature["geometry"];
-                    double area = 0; 
                     double value = 0;
-                    if (geometry["type"].ToString() == "Polygon")
-                    {
-                        var coordinates = geometry["coordinates"];
-                        foreach (var polygon in coordinates)
-                        {
-                                                       
-                            for (int i = 0; i < polygon.Count(); i++)
-                            {
-                                // Fix Coordinates into standard Lat/Long Format    
-                                double[] thisCoord = ((JArray)polygon[i]).Select(x => (double)x).ToArray();
-                                double[] transformedCoord = UtmToLatLon(thisCoord[0], thisCoord[1], 10, true);  // Assuming UTM zone 10N
-                                polygon[i] = new JArray(transformedCoord[0], transformedCoord[1]);
-                            }
 
-                            for (int i = 0; i < polygon.Count(); i++)
+                    if (geometry["type"].ToString() == "Polygon" || geometry["type"].ToString() == "MultiPolygon")
+                    {
+                        var polygons = new List<List<double[]>>();
+
+                        if (geometry["type"].ToString() == "Polygon")
+                        {
+                            polygons.Add(geometry["coordinates"][0].Select(c => c.Select(v => (double)v).ToArray()).ToList());
+                        }
+                        else // MultiPolygon
+                        {
+                            foreach (var polygon in geometry["coordinates"])
                             {
-                                // Calculate Area    
-                                double[] thisCoord = ((JArray)polygon[i]).Select(x => (double)x).ToArray();
-                                double[] nextCoord = ((JArray)polygon[(i + 1) % polygon.Count()]).Select(x => (double)x).ToArray();
-                                                            
-                                area += thisCoord[0] * nextCoord[1] - nextCoord[0] * thisCoord[1];
+                                polygons.Add(polygon[0].Select(c => c.Select(v => (double)v).ToArray()).ToList());
                             }
-                            var areaInSquareDegrees = Math.Abs(area) / 2.0;
-                            var areaInSquareMetres = areaInSquareDegrees * 12362500000;
-                            area = areaInSquareMetres / 4046.85642; // Acres
+                        }
+
+                        if (PIDToValuesDictionary.ContainsKey(PID))
+                            value = PIDToValuesDictionary[PID];
+
+                        if (value == 0)
+                            continue;
+
+                        double totalArea = polygons.Sum(p => GeometryOperations.CalculatePolygonArea(p));
+
+                        properties.Add(new Property
+                        {
+                            PID = PID,
+                            Polygons = polygons,
+                            Features = new List<JToken> { feature },
+                            Value = value,
+                            TotalArea = totalArea
+                        });
+                    }
+                }
+
+                Console.WriteLine("");
+                Console.WriteLine("Processing overlapping and enclosed parcels...");
+                int polyIndex = 0;
+
+                foreach (var property in properties)
+                {
+                    if (property.Value == 0)
+                    {
+                        property.Value = 0.01;
+                        property.ValuePerArea = 0.01 / property.TotalArea;
+                    }
+                }
+
+                while (polyIndex < properties.Count)
+                {
+                    ProgressBar(polyIndex, properties.Count);
+                    Property currentProperty = properties[polyIndex];
+                    bool merged = false;
+
+                    for (int j = 0; j < properties.Count; j++)
+                    {
+                        if (j == polyIndex) continue;
+
+                        Property otherProperty = properties[j];
+                        Rectangle currentBox = GeometryOperations.GetBoundingBox(currentProperty.Polygons);
+                        Rectangle otherBox = GeometryOperations.GetBoundingBox(otherProperty.Polygons);
+
+                        if (!currentBox.IntersectsWith(otherBox)) continue;
+
+                        foreach (var currentPoly in currentProperty.Polygons)
+                        {
+                            foreach (var otherPoly in otherProperty.Polygons)
+                            {
+                                bool currentEnclosedByOther = GeometryOperations.IsPolygonInPolygon(currentPoly, otherPoly);
+                                bool otherEnclosedByCurrent = GeometryOperations.IsPolygonInPolygon(otherPoly, currentPoly);
+                                bool areNearlyEqual = GeometryOperations.ArePolygonsNearlyEqual(currentPoly, otherPoly);
+
+                                if (currentEnclosedByOther || otherEnclosedByCurrent || areNearlyEqual)
+                                {
+                                    Property keepProperty, mergeProperty;
+                                    if (currentProperty.TotalArea >= otherProperty.TotalArea)
+                                    {
+                                        keepProperty = currentProperty;
+                                        mergeProperty = otherProperty;
+                                    }
+                                    else
+                                    {
+                                        keepProperty = otherProperty;
+                                        mergeProperty = currentProperty;
+                                    }
+
+                                    keepProperty.Value += mergeProperty.Value;
+                                    keepProperty.MergedPIDs.Add(mergeProperty.PID);
+                                    keepProperty.MergedPIDs.AddRange(mergeProperty.MergedPIDs);
+
+                                    if (mergeProperty == currentProperty)
+                                    {
+                                        properties.RemoveAt(polyIndex);
+                                        merged = true;
+                                    }
+                                    else
+                                    {
+                                        properties.RemoveAt(j);
+                                        j--;
+                                    }
+
+                                    keepProperty.ValuePerArea = keepProperty.Value / keepProperty.TotalArea;
+                                    goto NextProperty;
+                                }
+                            }
                         }
                     }
 
+                    if (!merged) polyIndex++;
 
-                    if (PIDToValuesDictionary.ContainsKey(PID))
-                        value = PIDToValuesDictionary[PID];
-
-                    if (value == 0)
-                        continue;
-
-                    
-                    if (!PIDToPropertiesDictionary.ContainsKey(PID))
-                    {
-                        var property = new Property()
-                        {
-                            PID = PID,
-                            Features = new List<JToken>() { feature },
-                            Value = value,
-                            TotalArea = area
-                        };
-                        PIDToPropertiesDictionary.Add(PID,property);
-                    } else {
-                        PIDToPropertiesDictionary[PID].Features.Add(feature);
-                        PIDToPropertiesDictionary[PID].TotalArea += area;
-                    }                    
+                NextProperty:
+                    continue;
                 }
-                Console.WriteLine("");
 
+                Console.WriteLine();
 
-                // Calculate Value Per Area
-                foreach (var propertyKVP in PIDToPropertiesDictionary)
+                // Calculate ValuePerArea for all properties
+                foreach (var property in properties)
                 {
-                    var property = propertyKVP.Value;
-                    property.ValuePerArea = property.Value / property.TotalArea;
+                    if (property.Polygons.Count > 1)
+                    {
+                        // For properties with multiple polygons, distribute the value proportionally
+                        double totalArea = property.Polygons.Sum(p => GeometryOperations.CalculatePolygonArea(p));
+                        property.ValuePerArea = property.Value / totalArea;
+
+                        // Create a list to store polygon-specific values per acre
+                        var polygonValuesPerAcre = new List<double>();
+
+                        for (int i = 0; i < property.Polygons.Count; i++)
+                        {
+                            double polygonArea = GeometryOperations.CalculatePolygonArea(property.Polygons[i]);
+                            double polygonValue = property.Value * (polygonArea / totalArea);
+                            double polygonValuePerAcre = polygonValue / polygonArea;
+                            polygonValuesPerAcre.Add(polygonValuePerAcre);
+                        }
+
+                        // Store the polygon-specific values per acre in a new property
+                        property.PolygonValuesPerAcre = polygonValuesPerAcre;
+                    }
+                    else
+                    {
+                        property.ValuePerArea = property.Value / property.TotalArea;
+                    }
                 }
+
+                // Handle empty polygons by assigning minimum value
+                double minimumValue = properties.Where(p => p.ValuePerArea > 0).Min(p => p.ValuePerArea);
+                foreach (var property in properties)
+                {
+                    if (property.ValuePerArea == 0)
+                    {
+                        property.ValuePerArea = minimumValue;
+                        property.Value = minimumValue * property.TotalArea;
+                    }
+                }
+
+                // LOGIC COMPLETE -- FILE OUTPUT
 
                 // PID Key no longer needed, Convert to List
-                var properties = PIDToPropertiesDictionary.Select(m => m.Value).OrderBy(x => x.ValuePerArea).ToList();
+                //var properties = PIDToPropertiesDictionary.Select(m => m.Value).OrderBy(x => x.ValuePerArea).ToList();
 
                 //
                 string valuePerAreaFile = Path.GetFileNameWithoutExtension(assessmentsFile) + ".ValuePerArea.geojson";
@@ -750,14 +974,26 @@ namespace vpa
                         foreach (var property in levelProperties)
                         {
                             if (property == null) continue;
-                            foreach (var feature in property.Features)
+                            for (int i = 0; i < property.Features.Count; i++)
                             {
+                                var feature = property.Features[i];
+                                double valuePerAcre;
+
+                                if (property.Polygons.Count > 1 && i < property.PolygonValuesPerAcre.Count)
+                                {
+                                    valuePerAcre = property.PolygonValuesPerAcre[i];
+                                }
+                                else
+                                {
+                                    valuePerAcre = property.ValuePerArea;
+                                }
+
                                 feature["properties"] = new JObject
                                 {
                                     { "level", level },
-                                    { "value_per_acre", property.ValuePerArea }
+                                    { "value_per_acre", valuePerAcre }
                                 };
-                                geoJson.features.Add(feature);                                
+                                geoJson.features.Add(feature);
                             }
                         }
 
