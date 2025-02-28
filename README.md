@@ -1,3 +1,5 @@
+# This project is now deprecated, see https://github.com/StrongTownsLangley/ValuePerAcre2
+
 # Value-per-Acre Mapping Tool
 This tool transforms a list of values at latitude and longitude points into an interactive map in the style of a traditional "value-per-acre" analysis.The map is colour graded in a heat-map style from red to blue, red indicating high value and blue indicating a low value.
 
